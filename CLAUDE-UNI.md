@@ -1,8 +1,8 @@
 # Univerzální Claude.md Template
 
 <!-- ========================================== -->
-<!-- UNIVERZÁLNÍ CLAUDE.MD TEMPLATE - START    -->
-<!-- Tuto sekci zkopíruj do nových projektů    -->
+<!-- 📋 UNIVERZÁLNÍ CLAUDE INSTRUKCE           -->
+<!-- ⚠️  NAČTI TAKÉ: docs/shared/CLAUDE-UNI.md -->
 <!-- ========================================== -->
 
 ## 🤖 Claude Konfigurace & Workflow
