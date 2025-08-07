@@ -139,6 +139,109 @@ project_parent_directory/
 - [ ] Dokumentovat required secrets v README
 - [ ] Nastavit development secrets v `../.env`
 
+### **🌐 Multi-Web VPS Deployment Standard**
+
+#### **🏗️ Server Architecture (Hetzner VPS):**
+```
+VPS: [username]-webhost-prod
+├── /var/www/projekt1/          → port 5000 → doména1.com
+├── /var/www/projekt2/          → port 5001 → doména2.com  
+├── /var/www/projekt3/          → port 5002 → doména3.com
+├── nginx → reverse proxy + SSL
+├── PostgreSQL → shared database
+└── PM2 → process management
+```
+
+#### **⚙️ Port Allocation Pattern:**
+```bash
+5000 - Main/First project
+5001 - Staging environment  
+5002 - Second project
+5003 - Third project
+...
+8000+ - Development ports
+```
+
+#### **📋 VPS Setup Checklist:**
+- [ ] **Server:** CPX11 (2 vCPU, 4GB RAM) nebo CPX21 (3 vCPU, 8GB RAM)
+- [ ] **OS:** Ubuntu 22.04 LTS
+- [ ] **SSH Key:** bez passphrase (pro GitHub Actions)
+- [ ] **Název:** `[username]-webhost-prod`
+- [ ] **Location:** Německo (nejblíž ČR)
+
+#### **🔧 Initial Server Setup:**
+```bash
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install Node.js 20
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# Install PostgreSQL
+sudo apt install postgresql postgresql-contrib -y
+
+# Install Nginx
+sudo apt install nginx -y
+
+# Install PM2 globally
+sudo npm install -g pm2
+
+# Setup UFW Firewall
+sudo ufw allow ssh
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw enable
+```
+
+#### **🌐 Nginx Multi-Domain Pattern:**
+```nginx
+# /etc/nginx/sites-available/projekt1
+server {
+    listen 80;
+    server_name doména1.com www.doména1.com;
+    
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+#### **🔐 SSL Certificate Pattern:**
+```bash
+# Let's Encrypt pro každou doménu
+sudo certbot --nginx -d doména1.com -d www.doména1.com
+sudo certbot --nginx -d doména2.com -d www.doména2.com
+```
+
+#### **📦 GitHub Actions Secrets (per project):**
+```
+PRODUCTION_HOST=your-vps-ip
+PRODUCTION_USER=root
+PRODUCTION_SSH_KEY=private-key-content
+PROJECT_PORT=5000  # unique pro každý projekt
+```
+
+#### **🚀 Deployment Workflow:**
+1. **Development** → push to `development` branch
+2. **Staging** → push to `staging` branch → auto-deploy na staging port
+3. **Production** → push to `main` branch → auto-deploy na production port
+4. **DNS** → Cloudflare A record na VPS IP
+
+#### **💾 Database Strategy:**
+```sql
+-- Shared PostgreSQL instance
+CREATE DATABASE projekt1_prod;
+CREATE DATABASE projekt1_staging;
+CREATE DATABASE projekt2_prod;
+-- Každý projekt vlastní DB s prefixem
+```
+
 <!-- ========================================== -->
 <!-- UNIVERZÁLNÍ TEMPLATE - END                -->
 <!-- ========================================== -->
