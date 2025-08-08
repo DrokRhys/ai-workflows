@@ -242,6 +242,76 @@ CREATE DATABASE projekt2_prod;
 -- Každý projekt vlastní DB s prefixem
 ```
 
+### **📦 Git Submodule Management**
+
+#### **🔧 Přidání submodulu:**
+```bash
+# Přidat submodul do konkrétní složky
+git submodule add https://github.com/username/repo-name docs/shared
+
+# Přidat submodul s konkrétní větví
+git submodule add -b main https://github.com/username/repo-name docs/shared
+```
+
+#### **📥 Načtení projektu se submoduly:**
+```bash
+# Varianta 1: Klonování s automatickým načtením submodulů
+git clone --recursive https://github.com/username/main-project.git
+
+# Varianta 2: Ruční načtení po normálním klonování
+git clone https://github.com/username/main-project.git
+cd main-project
+git submodule init
+git submodule update
+
+# Varianta 3: Zkrácený příkaz pro inicialiaci + update
+git submodule update --init --recursive
+```
+
+#### **🔄 Aktualizace submodulů:**
+```bash
+# Aktualizovat konkrétní submodul na nejnovější commit z origin
+git submodule update --remote docs/shared
+
+# Aktualizovat všechny submoduly
+git submodule update --remote
+
+# Aktualizovat a merge změny (pokud máš lokální změny)
+git submodule update --remote --merge
+
+# Aktualizovat na konkrétní commit
+cd docs/shared
+git checkout [commit-hash]
+cd ../..
+git add docs/shared
+git commit -m "Update submodule to specific commit"
+```
+
+#### **🗑️ Odstranění submodulu:**
+```bash
+# 1. Odregistrovat submodul
+git submodule deinit -f docs/shared
+
+# 2. Odstranit ze staging area a smazat složku
+git rm -f docs/shared
+
+# 3. Vyčistit git cache (volitelné)
+rm -rf .git/modules/docs/shared
+```
+
+#### **⚠️ Důležité poznámky k submodulům:**
+- **Commit tracking:** Submodul odkazuje na konkrétní commit, ne na branch
+- **Manual updates:** Musíš ručně aktualizovat pomocí `git submodule update --remote`
+- **Team workflow:** Všichni vývojáři musí vědět o submodulech
+- **CI/CD setup:** Build servery potřebují `--recursive` nebo `git submodule update`
+
+#### **📋 Submodule Checklist:**
+- [ ] Přidat submodul: `git submodule add URL path`
+- [ ] Dokumentovat v README jak načíst projekt (`git clone --recursive`)
+- [ ] Nastavit CI/CD pro recursive cloning
+- [ ] Pravidelně aktualizovat: `git submodule update --remote`
+- [ ] Commitnout aktualizace submodulů do hlavního projektu
+
 <!-- ========================================== -->
 <!-- UNIVERZÁLNÍ TEMPLATE - END                -->
 <!-- ========================================== -->
