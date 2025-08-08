@@ -246,7 +246,10 @@ CREATE DATABASE projekt2_prod;
 
 #### **🔧 Přidání submodulu:**
 ```bash
-# Přidat submodul do konkrétní složky
+# Přidat ai-workflows jako sdílenou dokumentaci (standardní setup)
+git submodule add https://github.com/DrokRhys/ai-workflows docs/shared
+
+# Obecný pattern pro jiné repozitáře
 git submodule add https://github.com/username/repo-name docs/shared
 
 # Přidat submodul s konkrétní větví
@@ -270,7 +273,7 @@ git submodule update --init --recursive
 
 #### **🔄 Aktualizace submodulů:**
 ```bash
-# Aktualizovat konkrétní submodul na nejnovější commit z origin
+# Aktualizovat ai-workflows na nejnovější verzi
 git submodule update --remote docs/shared
 
 # Aktualizovat všechny submoduly
@@ -284,7 +287,7 @@ cd docs/shared
 git checkout [commit-hash]
 cd ../..
 git add docs/shared
-git commit -m "Update submodule to specific commit"
+git commit -m "Update ai-workflows submodule to specific commit"
 ```
 
 #### **🗑️ Odstranění submodulu:**
